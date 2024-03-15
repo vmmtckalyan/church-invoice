@@ -108,26 +108,26 @@ const UploadExcel: React.FC = () => {
         </div >
       )}
       {jsonData.map((item, index) => (
-        <div key={index} id="divToPrint" className="bg-white border rounded-lg shadow-lg px-6 py-8 max-w-md mx-auto mt-8">
+        <div key={index} id="divToPrint" className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-8">
           <Image
-            src="/Vmmtc.jpeg"
+            src="/vmmtc-logo.png"
             alt="Vmmtc"
-            width={28}
-            height={28}
+            width={75}
+            height={75}
           />
-          <h1 className="font-bold text-2xl my-4 text-center text-blue-600">Methodist Tamil Church, Kalyan</h1>
+          <h1 className="font-bold text-2xl my-4 text-center text-violet-600">Methodist Tamil Church, Kalyan</h1>
           <div className="text-gray-700 text-center ">Opp. State Bank of India, Murbad road,</div>
-          <div className="text-gray-700 text-center mb-4">Kalyan (W) - 421301</div>
+          <div className="text-gray-700 text-center mb-10">Kalyan (W) - 421301</div>
           <div className="flex justify-between mb-6">
-            <h1 className="text-lg font-bold">Invoice: {item.Receipt}</h1>
+            <h1 className="text-lg font-bold">Receipt no.: {item.Receipt}</h1>
             <div className="text-gray-700">
-              <div>{item.Date}</div>
+              <div>Date: {item.Date}</div>
               {/* <div>Invoice #: INV12345</div> */}
             </div>
           </div>
           <div className="mb-8">
-            <h2 className="text-lg font-bold mb-4">Bill To:</h2>
-            <div className="text-gray-700 mb-2">{item.Name}</div>
+            <h2 className="text-lg font-bold mb-4">Received from: {item.Name}</h2>
+            <div className="text-violet-700 mb-2"></div>
             {/* <div className="text-gray-700 mb-2">123 Main St.</div>
             <div className="text-gray-700 mb-2">Anytown, USA 12345</div>
             <div className="text-gray-700">johndoe@example.com</div> */}
@@ -135,7 +135,7 @@ const UploadExcel: React.FC = () => {
           <table className="w-full mb-8">
             <thead>
               <tr>
-                <th className="text-left font-bold text-gray-700">Description</th>
+                <th className="text-left font-bold text-gray-700 mb-6">Received towards</th>
                 <th className="text-right font-bold text-gray-700">Amount</th>
               </tr>
             </thead>
@@ -145,8 +145,7 @@ const UploadExcel: React.FC = () => {
                 <td className="text-right text-gray-700">Rs. {item.Amount}</td>
               </tr>
               <tr>
-                <td className="text-left text-gray-700">Product 2</td>
-                <td className="text-right text-gray-700">{item.Description}</td>
+                <td className="text-wrap pr-20 text-left text-gray-700 text-xs italic">({item.Description})</td>
               </tr>
               {/* <tr>
                 <td className="text-left text-gray-700">Product 3</td>
@@ -154,14 +153,15 @@ const UploadExcel: React.FC = () => {
               </tr> */}
             </tbody>
             <tfoot>
-              <tr>
+              {/* <tr>
                 <td className="text-left font-bold text-gray-700">Total</td>
                 <td className="text-right font-bold text-gray-700">Rs. {item.Amount}</td>
-              </tr>
+              </tr> */}
             </tfoot>
           </table>
-          <div className="text-gray-700 mb-2">Thank you for your support!</div>
-          <div className="text-gray-700 text-sm">Please remit payment within 30 days.</div>
+          <div className="text-gray-700 text-center mb-2">Thank you for your support!</div>
+          <div className="text-gray-700 text-center text-sm mb-4">God loves a cheerful giver.</div>
+          <div className="text-gray-700 text-center text-xs italic">This is a computer-generated document. No signature is required.</div>
         </div>
       ))}
     </div >
