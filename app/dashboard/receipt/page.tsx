@@ -53,25 +53,31 @@ const UploadExcel: React.FC = () => {
     html2pdf().from(element).save();
   };
 
-  const handleUpload = () => {
-    console.log("handleUpload", data)
-    if (selectedFile) {
-      const fileReader = new FileReader();
-      fileReader.onload = async (event) => {
-        if (event.target) {
-          const data = event.target.result;
-
-          const workbook = XLSX.read(data, { type: 'binary' });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const excelData = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1 });
-          setExcelData(excelData);
-        }
+  const handleUpload = async() => {
+    for (let i = 0; i < jsonData.length; i++) {
+      const element = document.getElementById(i + 'id');
+      const options = {
+        filename: jsonData[i].Receipt + "-" + jsonData[i].Name + '.pdf', // Specify the desired filename here
       };
-      fileReader.readAsBinaryString(selectedFile);
-    } else {
-      console.log('No file selected.');
+      html2pdf().from(element).set(options).save();
+      // html2pdf().from(element).save();
+      // const formData = new FormData();
+      // formData.append('pdf', html2pdf().from(element).set(options));
+      // formData.append('to', jsonData[i].Mobile);
+
+      // try {
+      //   await axios.post('/api/send-pdf', formData, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data'
+      //     }
+      //   });
+      //   alert('PDF sent successfully!');
+      // } catch (error) {
+      //   console.error('Error sending PDF:', error);
+      //   alert('Failed to send PDF.');
+      // }
     }
+
   };
 
 
@@ -83,7 +89,7 @@ const UploadExcel: React.FC = () => {
         onChange={handleFileChange}
       />
       <button className="ml-5 mt-10 flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        onClick={handleUpload}>Upload</button>
+        onClick={handleUpload}>Download Pdf</button>
       {jsonData && jsonData[0] && (
         <div>
           <h2>Excel Data:</h2>
@@ -106,11 +112,12 @@ const UploadExcel: React.FC = () => {
           </table>
 
         </div >
+
       )}
       {jsonData.map((item, index) => (
-        <div key={index} id="divToPrint" className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-8">
+        <div key={index} id={index + "id"} className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-8">
           <Image
-            src="/vmmtc-logo.png"
+            src="/Vmmtc.jpeg"
             alt="Vmmtc"
             width={75}
             height={75}
