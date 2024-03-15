@@ -12,11 +12,13 @@ const UploadExcel: React.FC = () => {
   };
 
   const handleUpload = () => {
+    console.log("handleUpload")
     if (selectedFile) {
       const fileReader = new FileReader();
       fileReader.onload = (event) => {
         if (event.target) {
           const data = event.target.result;
+          console.log("data", data)
           const workbook = XLSX.read(data, { type: 'binary' });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
@@ -37,7 +39,8 @@ const UploadExcel: React.FC = () => {
         accept=".xlsx, .xls"
         onChange={handleFileChange}
       />
-      <button onClick={handleUpload}>Upload</button>
+      <button className="ml-5 mt-10 flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" 
+      onClick={handleUpload}>Upload</button>
       {excelData && (
         <div>
           <h2>Excel Data:</h2>
