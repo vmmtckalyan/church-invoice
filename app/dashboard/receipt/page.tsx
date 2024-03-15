@@ -88,8 +88,10 @@ const UploadExcel: React.FC = () => {
         accept=".xlsx, .xls"
         onChange={handleFileChange}
       />
-      <button className="ml-5 mt-10 flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      <button className="p-3 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
         onClick={handleUpload}>Download Pdf</button>
+      <button className="ml-5 mb-10 p-3 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+        onClick={handleUpload}>Whatsapp Push</button>
       {jsonData && jsonData[0] && (
         <div>
           <h2>Excel Data:</h2>
@@ -97,15 +99,15 @@ const UploadExcel: React.FC = () => {
             <tbody ref={contentRef}>
               {jsonData.map((item, index) => (
                 <tr key={index}>
-                  {/* <td>{item.S.no}</td> */}
-                  <td>{item.Amount}</td>
-                  <td>{item.Date}</td>
-                  <td>{item.Description}</td>
-                  <td>{item.Heading}</td>
-                  {/* <td>{item.Mobile no}</td> */}
-                  <td>{item.Mode}</td>
+                  <td>{item.number}</td>
+                  <td>{item.Receipt}</td>
                   <td>{item.Name}</td>
-                  {/* <td>{item.Receipt No}</td> */}
+                  <td>{item.Date}</td>
+                  <td>{item.Heading}</td>
+                  <td>{item.Description}</td>
+                  <td>{item.Amount}</td>
+                  <td>{item.Mode}</td>
+                  <td>{item.Mobile}</td>
                 </tr>
               ))}
             </tbody>
@@ -133,7 +135,7 @@ const UploadExcel: React.FC = () => {
             </div>
           </div>
           <div className="mb-8">
-            <h2 className="text-lg font-bold mb-4">Received from: {item.Name}</h2>
+            <h2 className="text-lg font-bold mb-4">Received from: {item.Title} {item.Name}</h2>
             <div className="text-violet-700 mb-2"></div>
             {/* <div className="text-gray-700 mb-2">123 Main St.</div>
             <div className="text-gray-700 mb-2">Anytown, USA 12345</div>
@@ -152,23 +154,24 @@ const UploadExcel: React.FC = () => {
                 <td className="text-right text-gray-700">Rs. {item.Amount}</td>
               </tr>
               <tr>
-                <td className="text-wrap pr-20 text-left text-gray-700 text-xs italic">({item.Description})</td>
+                <td className="text-wrap pr-20 text-left text-gray-700 text-xs italic mb-10">({item.Description})</td>
               </tr>
               {/* <tr>
-                <td className="text-left text-gray-700">Product 3</td>
-                <td className="text-right text-gray-700">Rs.75.00</td>
+                <td className="text-left font-bold text-gray-500">Payment mode</td>
+                <td className="text-right font-bold text-gray-500 italic">{item.Mode}</td>
               </tr> */}
             </tbody>
             <tfoot>
               {/* <tr>
-                <td className="text-left font-bold text-gray-700">Total</td>
-                <td className="text-right font-bold text-gray-700">Rs. {item.Amount}</td>
+                <td className="text-left font-bold text-gray-500">Payment mode</td>
+                <td className="text-right font-bold text-gray-500 italic">{item.Mode}</td>
               </tr> */}
             </tfoot>
           </table>
+          <div className="text-gray-500 font-bold text-center mb-8">Payment mode: {item.Mode}</div>
           <div className="text-gray-700 text-center mb-2">Thank you for your support!</div>
           <div className="text-gray-700 text-center text-sm mb-4">God loves a cheerful giver.</div>
-          <div className="text-gray-700 text-center text-xs italic">This is a computer-generated document. No signature is required.</div>
+          <div className="text-gray-400 text-center text-xs italic">This is a computer-generated document. No signature is required.</div>
         </div>
       ))}
     </div >
