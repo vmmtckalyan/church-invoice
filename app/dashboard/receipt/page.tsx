@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import axios from 'axios';
@@ -16,14 +16,15 @@ const UploadExcel: React.FC = () => {
   const [excelData, setExcelData] = useState<any[][] | null>(null);
   const contentRef = useRef(null);
   const [jsonData, setJsonData] = useState<any>([]);
-  var data: any[] | React.SetStateAction<null> = []
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  var data: any[] | React.SetStateAction<null> = [];
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     if (event.target.files) {
       const file = event.target.files[0];
       const reader = new FileReader();
 
       reader.onload = (evt) => {
-
         if (evt.target) {
           const bstr = evt.target.result;
           const wb = XLSX.read(bstr, { type: 'binary' });
@@ -31,9 +32,9 @@ const UploadExcel: React.FC = () => {
           const ws = wb.Sheets[wsname];
           data = XLSX.utils.sheet_to_json(ws);
           // const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-          console.log("data", data);
+          console.log('data', data);
           setJsonData(data);
-          console.log("jsonData", jsonData)
+          console.log('jsonData', jsonData);
         }
       };
       reader.readAsBinaryString(file);
@@ -76,7 +77,15 @@ const UploadExcel: React.FC = () => {
 
       // Add PDF to zip
       pdfPromise.then((pdfBlob: null) => {
-        zip.file(jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".pdf", pdfBlob);
+        zip.file(
+          jsonData[i].Mobile +
+            '-' +
+            jsonData[i].Name +
+            '-' +
+            jsonData[i].Receipt +
+            '.pdf',
+          pdfBlob,
+        );
       });
       // Generate PDF from HTML
       // const pdfPromise = html2pdf().from(element).toPdf().get('pdf');
@@ -86,11 +95,11 @@ const UploadExcel: React.FC = () => {
       // pdfPromise.then((pdf: null) => {
       //   zip.file(`pdf_${i + 1}.pdf`, pdf);
       // });
-    };
+    }
 
     // Generate zip folder once all PDFs are generated
     Promise.all(pdfPromises).then(() => {
-      zip.generateAsync({ type: 'blob' }).then(content => {
+      zip.generateAsync({ type: 'blob' }).then((content) => {
         const zipBlob = new Blob([content], { type: 'application/zip' });
         const zipUrl = URL.createObjectURL(zipBlob);
 
@@ -108,23 +117,23 @@ const UploadExcel: React.FC = () => {
     });
   };
 
-
-
-
   return (
     <div className="mt-6 flow-root">
-      <input
-        type="file"
-        accept=".xlsx, .xls"
-        onChange={handleFileChange}
-      />
-      <button className="p-3 items-center rounded-lg bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
-        onClick={handleUpload}>Download Pdf</button>
-      <button className="ml-5 mb-10 p-3 items-center rounded-lg bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
-        onClick={handleUpload}>Whatsapp Push</button>
+      <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+      <button
+        className="items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
+        onClick={handleUpload}
+      >
+        Download Pdf
+      </button>
+      <button
+        className="mb-10 ml-5 items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
+        onClick={handleUpload}
+      >
+        Whatsapp Push
+      </button>
       {jsonData && jsonData[0] && (
         <div>
-
           {/* <table>
             <tbody ref={contentRef}>
               {jsonData.map((item: any, index: any) => (
@@ -145,11 +154,10 @@ const UploadExcel: React.FC = () => {
           <div className="mt-6 flow-root">
             <div className="inline-block min-w-full align-middle">
               <div className="rounded-lg bg-violet-400 p-2 md:pt-0">
-
                 <table className="hidden min-w-full text-gray-900 md:table">
                   <thead className="rounded-lg text-left text-sm font-normal">
                     <tr>
-                    <th scope="col" className="px-3 py-5 font-medium">
+                      <th scope="col" className="px-3 py-5 font-medium">
                         Sr. No.
                       </th>
                       <th scope="col" className="px-3 py-5 font-medium">
@@ -204,7 +212,9 @@ const UploadExcel: React.FC = () => {
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                           {invoice.Heading}
-                          <p class="text-sm font-normal text-gray-600 dark:text-gray-400">{invoice.Description}</p>
+                          <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                            {invoice.Description}
+                          </p>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                           Rs. {invoice.Amount}
@@ -222,27 +232,34 @@ const UploadExcel: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
-
               </div>
             </div>
           </div>
-
-        </div >
-
+        </div>
       )}
       {jsonData.map((item: any, index: any) => (
-        <div key={index} id={index + "id"} className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-4">
+        <div
+          key={index}
+          id={index + 'id'}
+          className="mx-auto mt-4  max-w-md rounded-3xl border-4 border-violet-500/75 bg-gray-100 px-6 py-8 shadow-2xl"
+        >
           <Image
             src="/vmmtc-logo.png"
-            className='mx-auto'
+            className="mx-auto"
             alt="Vmmtc"
             width={75}
             height={75}
           />
-          <h1 className="font-bold text-2xl my-4 text-center text-violet-600">CRT MRC MC VMMTC - Kalyan</h1>
-          <div className="text-gray-700 text-center ">Opp. State Bank of India, Murbad road,</div>
-          <div className="text-gray-700 text-center mb-10">Kalyan (W) - 421301</div>
-          <div className="flex justify-between mb-6">
+          <h1 className="my-4 text-center text-2xl font-bold text-violet-600">
+            CRT MRC MC VMMTC - Kalyan
+          </h1>
+          <div className="text-center text-gray-700 ">
+            Opp. State Bank of India, Murbad road,
+          </div>
+          <div className="mb-10 text-center text-gray-700">
+            Kalyan (W) - 421301
+          </div>
+          <div className="mb-6 flex justify-between">
             <h1 className="text-lg font-bold">Receipt no.: {item.Receipt}</h1>
             <div className="text-gray-700">
               <div>Date: {item.Date}</div>
@@ -250,16 +267,20 @@ const UploadExcel: React.FC = () => {
             </div>
           </div>
           <div className="mb-8">
-            <h2 className="text-lg font-bold mb-4">Received from: {item.Title} {item.Name}</h2>
-            <div className="text-violet-700 mb-2"></div>
+            <h2 className="mb-4 text-lg font-bold">
+              Received from: {item.Title} {item.Name}
+            </h2>
+            <div className="mb-2 text-violet-700"></div>
             {/* <div className="text-gray-700 mb-2">123 Main St.</div>
             <div className="text-gray-700 mb-2">Anytown, USA 12345</div>
             <div className="text-gray-700">johndoe@example.com</div> */}
           </div>
-          <table className="w-full mb-8">
+          <table className="mb-8 w-full">
             <thead>
               <tr>
-                <th className="text-left font-bold text-gray-700 mb-6">Received towards</th>
+                <th className="mb-6 text-left font-bold text-gray-700">
+                  Received towards
+                </th>
                 <th className="text-right font-bold text-gray-700">Amount</th>
               </tr>
             </thead>
@@ -269,7 +290,9 @@ const UploadExcel: React.FC = () => {
                 <td className="text-right text-gray-700">Rs. {item.Amount}</td>
               </tr>
               <tr>
-                <td className="text-wrap pr-20 text-left text-gray-700 text-xs italic mb-10">({item.Description})</td>
+                <td className="text-wrap mb-10 pr-20 text-left text-xs italic text-gray-700">
+                  ({item.Description})
+                </td>
               </tr>
               {/* <tr>
                 <td className="text-left font-bold text-gray-500">Payment mode</td>
@@ -283,13 +306,21 @@ const UploadExcel: React.FC = () => {
               </tr> */}
             </tfoot>
           </table>
-          <div className="text-gray-500 font-bold text-center mb-8">Payment mode: {item.Mode}</div>
-          <div className="text-gray-700 text-center mb-2">Thank you for your support!</div>
-          <div className="text-gray-700 text-center text-sm mb-4">God loves a cheerful giver.</div>
-          <div className="text-gray-400 text-center text-xs italic">This is a computer-generated document. No signature is required.</div>
+          <div className="mb-8 text-center font-bold text-gray-500">
+            Payment mode: {item.Mode}
+          </div>
+          <div className="mb-2 text-center text-gray-700">
+            Thank you for your support!
+          </div>
+          <div className="mb-4 text-center text-sm text-gray-700">
+            God loves a cheerful giver.
+          </div>
+          <div className="text-center text-xs italic text-gray-400">
+            This is a computer-generated document. No signature is required.
+          </div>
         </div>
       ))}
-    </div >
+    </div>
   );
 };
 
