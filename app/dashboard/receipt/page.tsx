@@ -118,9 +118,9 @@ const UploadExcel: React.FC = () => {
         accept=".xlsx, .xls"
         onChange={handleFileChange}
       />
-      <button className="p-3 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      <button className="p-3 items-center rounded-lg bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
         onClick={handleUpload}>Download Pdf</button>
-      <button className="ml-5 mb-10 p-3 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      <button className="ml-5 mb-10 p-3 items-center rounded-lg bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
         onClick={handleUpload}>Whatsapp Push</button>
       {jsonData && jsonData[0] && (
         <div>
@@ -144,25 +144,31 @@ const UploadExcel: React.FC = () => {
           </table> */}
           <div className="mt-6 flow-root">
             <div className="inline-block min-w-full align-middle">
-              <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+              <div className="rounded-lg bg-violet-400 p-2 md:pt-0">
 
                 <table className="hidden min-w-full text-gray-900 md:table">
                   <thead className="rounded-lg text-left text-sm font-normal">
                     <tr>
-                      <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                        Customer
+                    <th scope="col" className="px-3 py-5 font-medium">
+                        Sr. No.
                       </th>
                       <th scope="col" className="px-3 py-5 font-medium">
-                        Email
+                        Receipt No.
+                      </th>
+                      <th scope="col" className="px-3 py-5 font-medium">
+                        Date
+                      </th>
+                      <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                        Member
+                      </th>
+                      <th scope="col" className="px-3 py-5 font-medium">
+                        Received towards
                       </th>
                       <th scope="col" className="px-3 py-5 font-medium">
                         Amount
                       </th>
                       <th scope="col" className="px-3 py-5 font-medium">
-                        Date
-                      </th>
-                      <th scope="col" className="px-3 py-5 font-medium">
-                        Status
+                        Mobile No.
                       </th>
                       <th scope="col" className="relative py-3 pl-6 pr-3">
                         <span className="sr-only">Edit</span>
@@ -175,6 +181,15 @@ const UploadExcel: React.FC = () => {
                         key={index}
                         className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                       >
+                        <td className="whitespace-nowrap px-3 py-3">
+                          {invoice.number}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                          {invoice.Receipt}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                          {invoice.Date}
+                        </td>
                         <td className="whitespace-nowrap py-3 pl-6 pr-3">
                           <div className="flex items-center gap-3">
                             {/* <Image
@@ -194,10 +209,7 @@ const UploadExcel: React.FC = () => {
                           Rs. {invoice.Amount}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                          {invoice.Date}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-3">
-                          {invoice.Receipt}
+                          Rs. {invoice.Mobile}
                         </td>
                         <td className="whitespace-nowrap py-3 pl-6 pr-3">
                           <div className="flex justify-end gap-3">
@@ -220,11 +232,11 @@ const UploadExcel: React.FC = () => {
       {jsonData.map((item: any, index: any) => (
         <div key={index} id={index + "id"} className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-8">
           <Image
-            src="/Vmmtc.png"
+            src="/vmmtc-logo.png"
             className='mx-auto'
             alt="Vmmtc"
-            width={75}
-            height={75}
+            width={100}
+            height={100}
           />
           <h1 className="font-bold text-2xl my-4 text-center text-violet-600">Methodist Tamil Church, Kalyan</h1>
           <div className="text-gray-700 text-center ">Opp. State Bank of India, Murbad road,</div>

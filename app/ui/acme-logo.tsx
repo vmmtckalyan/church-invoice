@@ -8,7 +8,7 @@ export default function AcmeLogo() {
     >
       {/* <GlobeAltIcon className="h-12 w-12 rotate-[15deg]" /> */}
       <Image
-        src="/Vmmtc.png"
+        src="/vmmtc-logo.png"
         alt="Vmmtc"
         className='mx-auto'
         width={60}
