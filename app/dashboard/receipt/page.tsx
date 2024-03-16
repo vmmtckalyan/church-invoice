@@ -76,7 +76,7 @@ const UploadExcel: React.FC = () => {
 
       // Add PDF to zip
       pdfPromise.then((pdfBlob: null) => {
-        zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
+        zip.file(jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".pdf", pdfBlob);
       });
       // Generate PDF from HTML
       // const pdfPromise = html2pdf().from(element).toPdf().get('pdf');
@@ -182,7 +182,7 @@ const UploadExcel: React.FC = () => {
                         className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                       >
                         <td className="whitespace-nowrap px-3 py-3">
-                          {invoice.number}
+                          {invoice.Number}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                           {invoice.Receipt}
@@ -204,12 +204,13 @@ const UploadExcel: React.FC = () => {
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                           {invoice.Heading}
+                          <p class="text-sm font-normal text-gray-600 dark:text-gray-400">{invoice.Description}</p>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                           Rs. {invoice.Amount}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                          Rs. {invoice.Mobile}
+                          {invoice.Mobile}
                         </td>
                         <td className="whitespace-nowrap py-3 pl-6 pr-3">
                           <div className="flex justify-end gap-3">
@@ -230,15 +231,15 @@ const UploadExcel: React.FC = () => {
 
       )}
       {jsonData.map((item: any, index: any) => (
-        <div key={index} id={index + "id"} className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-8">
+        <div key={index} id={index + "id"} className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-4">
           <Image
             src="/vmmtc-logo.png"
             className='mx-auto'
             alt="Vmmtc"
-            width={100}
-            height={100}
+            width={75}
+            height={75}
           />
-          <h1 className="font-bold text-2xl my-4 text-center text-violet-600">Methodist Tamil Church, Kalyan</h1>
+          <h1 className="font-bold text-2xl my-4 text-center text-violet-600">CRT MRC MC VMMTC - Kalyan</h1>
           <div className="text-gray-700 text-center ">Opp. State Bank of India, Murbad road,</div>
           <div className="text-gray-700 text-center mb-10">Kalyan (W) - 421301</div>
           <div className="flex justify-between mb-6">
