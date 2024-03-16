@@ -8,81 +8,111 @@ import jsPDF from 'jspdf';
 import html2pdf from 'html2pdf.js';
 import { excelToArray } from './excelToArray';
 import Image from 'next/image';
-interface MyObject {
-  Amount: ""
-  Date: "",
-  Description: "",
-  Heading: "",
-  Mobile: "",
-  Mode: "",
-  Receipt: "",
-  Name: "",
-  number: "",
-  // Add other properties as needed
-}
+import JSZip from 'jszip';
+import { PDFDocument, rgb } from 'pdf-lib';
+
 const UploadExcel: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [excelData, setExcelData] = useState<any[][] | null>(null);
   const contentRef = useRef(null);
-  const [jsonData, setJsonData] = useState<MyObject[]>([])
+  const [jsonData, setJsonData] = useState<any>([]);
   var data: any[] | React.SetStateAction<null> = []
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+    if (event.target.files) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
 
-    reader.onload = (evt) => {
-      const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, { type: 'binary' });
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
-      data = XLSX.utils.sheet_to_json(ws);
-      // const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      console.log("data", data);
-      setJsonData(data);
-      console.log("jsonData", jsonData)
-    };
+      reader.onload = (evt) => {
 
-    reader.readAsBinaryString(file);
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
+        if (evt.target) {
+          const bstr = evt.target.result;
+          const wb = XLSX.read(bstr, { type: 'binary' });
+          const wsname = wb.SheetNames[0];
+          const ws = wb.Sheets[wsname];
+          data = XLSX.utils.sheet_to_json(ws);
+          // const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          console.log("data", data);
+          setJsonData(data);
+          console.log("jsonData", jsonData)
+        }
+      };
+      reader.readAsBinaryString(file);
+      if (event.target.files && event.target.files.length > 0) {
+        setSelectedFile(event.target.files[0]);
+      }
     }
   };
 
-  const generatePDF = () => {
-    const element = document.getElementById('divToPrint');
-    html2pdf().from(element).save();
+  // const generatePDF = () => {
+  //   const element = document.getElementById('divToPrint');
+  //   html2pdf().from(element).save();
+  // };
+
+  const handleUpload = async () => {
+    generatePDF();
+    // const pdfPromises: Promise<Blob>[] = [];
+    // const zip = new JSZip();
+    // for (let i = 0; i < jsonData.length; i++) {
+    //   const element = document.getElementById(i + 'id');
+    //   const options = {
+    //     filename: jsonData[i].Receipt + "-" + jsonData[i].Name + '.pdf', // Specify the desired filename here
+    //   };
+    //   html2pdf().from(element).set(options).save();
+    // }
   };
 
-  const handleUpload = async() => {
+  //  new mwthod
+  const generatePDF = async () => {
+    const pdfPromises: Promise<Blob>[] = [];
+    const zip = new JSZip();
+
+    // Array of HTML elements or strings to convert to PDFs
+    const contentToConvert = ['<h1>PDF 1</h1>', '<h1>PDF 2</h1>'];
+
     for (let i = 0; i < jsonData.length; i++) {
       const element = document.getElementById(i + 'id');
-      const options = {
-        filename: jsonData[i].Receipt + "-" + jsonData[i].Name + '.pdf', // Specify the desired filename here
-      };
-      html2pdf().from(element).set(options).save();
-      // html2pdf().from(element).save();
-      // const formData = new FormData();
-      // formData.append('pdf', html2pdf().from(element).set(options));
-      // formData.append('to', jsonData[i].Mobile);
+      const pdfPromise = html2pdf().from(element).toPdf().output('blob');
+      pdfPromises.push(pdfPromise);
 
-      // try {
-      //   await axios.post('/api/send-pdf', formData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data'
-      //     }
-      //   });
-      //   alert('PDF sent successfully!');
-      // } catch (error) {
-      //   console.error('Error sending PDF:', error);
-      //   alert('Failed to send PDF.');
-      // }
-    }
+      // Add PDF to zip
+      pdfPromise.then((pdfBlob: null) => {
+        zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
+      });
+      // Generate PDF from HTML
+      // const pdfPromise = html2pdf().from(element).toPdf().get('pdf');
+      // pdfPromises.push(pdfPromise);
 
+      // // Add PDF to zip
+      // pdfPromise.then((pdf: null) => {
+      //   zip.file(`pdf_${i + 1}.pdf`, pdf);
+      // });
+    };
+
+    // Generate zip folder once all PDFs are generated
+    Promise.all(pdfPromises).then(() => {
+      zip.generateAsync({ type: 'blob' }).then(content => {
+        const zipBlob = new Blob([content], { type: 'application/zip' });
+        const zipUrl = URL.createObjectURL(zipBlob);
+
+        // Create a link to download the zip
+        const link = document.createElement('a');
+        link.href = zipUrl;
+        link.download = 'pdfs.zip';
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        document.body.removeChild(link);
+        URL.revokeObjectURL(zipUrl);
+      });
+    });
   };
+
+
 
 
   return (
-    <div>
+    <div className="mt-6 flow-root">
       <input
         type="file"
         accept=".xlsx, .xls"
@@ -94,10 +124,10 @@ const UploadExcel: React.FC = () => {
         onClick={handleUpload}>Whatsapp Push</button>
       {jsonData && jsonData[0] && (
         <div>
-          <h2>Excel Data:</h2>
-          <table>
+
+          {/* <table>
             <tbody ref={contentRef}>
-              {jsonData.map((item, index) => (
+              {jsonData.map((item: any, index: any) => (
                 <tr key={index}>
                   <td>{item.number}</td>
                   <td>{item.Receipt}</td>
@@ -111,15 +141,87 @@ const UploadExcel: React.FC = () => {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
+          <div className="mt-6 flow-root">
+            <div className="inline-block min-w-full align-middle">
+              <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+
+                <table className="hidden min-w-full text-gray-900 md:table">
+                  <thead className="rounded-lg text-left text-sm font-normal">
+                    <tr>
+                      <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                        Customer
+                      </th>
+                      <th scope="col" className="px-3 py-5 font-medium">
+                        Email
+                      </th>
+                      <th scope="col" className="px-3 py-5 font-medium">
+                        Amount
+                      </th>
+                      <th scope="col" className="px-3 py-5 font-medium">
+                        Date
+                      </th>
+                      <th scope="col" className="px-3 py-5 font-medium">
+                        Status
+                      </th>
+                      <th scope="col" className="relative py-3 pl-6 pr-3">
+                        <span className="sr-only">Edit</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white">
+                    {jsonData?.map((invoice: any, index: any) => (
+                      <tr
+                        key={index}
+                        className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                      >
+                        <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                          <div className="flex items-center gap-3">
+                            {/* <Image
+                            src={invoice.image_url}
+                            className="rounded-full"
+                            width={28}
+                            height={28}
+                            alt={`${invoice.name}'s profile picture`}
+                          /> */}
+                            <p>{invoice.Name}</p>
+                          </div>
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                          {invoice.Heading}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                          Rs. {invoice.Amount}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                          {invoice.Date}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-3">
+                          {invoice.Receipt}
+                        </td>
+                        <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                          <div className="flex justify-end gap-3">
+                            {/* <UpdateInvoice id={invoice.id} />
+                          <DeleteInvoice id={invoice.id} /> */}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div>
 
         </div >
 
       )}
-      {jsonData.map((item, index) => (
+      {jsonData.map((item: any, index: any) => (
         <div key={index} id={index + "id"} className="bg-gray-100 border-4  border-violet-500/75 rounded-3xl shadow-2xl px-6 py-8 max-w-md mx-auto mt-8">
           <Image
-            src="/Vmmtc.jpeg"
+            src="/Vmmtc.png"
+            className='mx-auto'
             alt="Vmmtc"
             width={75}
             height={75}
