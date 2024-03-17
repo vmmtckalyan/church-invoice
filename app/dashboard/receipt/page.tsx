@@ -241,18 +241,23 @@ const UploadExcel: React.FC = () => {
         <div
           key={index}
           id={index + 'id'}
-          className="mx-auto mt-4  max-w-md rounded-3xl border-4 border-violet-500/75 bg-gray-100 px-6 py-8 shadow-2xl"
+          className="mx-auto mt-4 max-w-md rounded-3xl border-4 border-violet-500/75 bg-gray-100 px-6 py-8 shadow-2xl"
         >
-          <Image
-            src="/vmmtc-logo.png"
-            className="mx-auto"
-            alt="Vmmtc"
-            width={75}
-            height={75}
-          />
-          <h1 className="my-4 text-center text-2xl font-bold text-violet-600">
-            CRT MRC MC VMMTC - Kalyan
-          </h1>
+          <div className="flex items-center justify-center">
+            <Image
+              src="/vmmtc-logo.png"
+              alt="Vmmtc"
+              width={75}
+              height={75}
+              sizes="(max-width: 640px) 100px, 200px"
+            />
+          </div>
+          <div className="">
+            <h1 className="my-4 text-center text-2xl font-bold text-violet-600">
+              VMMTC - Kalyan
+            </h1>
+          </div>
+
           <div className="text-center text-gray-700 ">
             Opp. State Bank of India, Murbad road,
           </div>
