@@ -4,17 +4,17 @@ import Image from 'next/image';
 export default function AcmeLogo() {
   return (
     <div
-      className={`${lusitana.className}  items-center leading-none text-white`}
+      className={`${lusitana.className} items-center leading-none text-white`}
     >
       {/* <GlobeAltIcon className="h-12 w-12 rotate-[15deg]" /> */}
       <Image
         src="/vmmtc-logo.png"
         alt="Vmmtc"
-        className='mx-auto'
+        className="mx-auto"
         width={60}
         height={60}
       />
-      <p className="text-[44px] mt-4">VMMTC</p>
+      <p className="mt-4 text-[44px]">VMMTC</p>
     </div>
   );
 }
