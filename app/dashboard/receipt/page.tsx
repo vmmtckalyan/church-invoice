@@ -254,7 +254,7 @@ const UploadExcel: React.FC = () => {
           </div>
           <div className="">
             <h1 className="my-4 text-center text-2xl font-bold text-violet-600">
-              VMMTC - Kalyan
+              CRT MRC MC VMMTC - Kalyan
             </h1>
           </div>
 
