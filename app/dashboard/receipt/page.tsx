@@ -1,15 +1,13 @@
 'use client';
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
-import axios from 'axios';
+
 import { useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import html2pdf from 'html2pdf.js';
-import { excelToArray } from './excelToArray';
 import Image from 'next/image';
 import JSZip from 'jszip';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { saveAs } from 'file-saver';
 
 const UploadExcel: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -44,77 +42,43 @@ const UploadExcel: React.FC = () => {
     }
   };
 
-  // const generatePDF = () => {
-  //   const element = document.getElementById('divToPrint');
-  //   html2pdf().from(element).save();
-  // };
+
 
   const handleUpload = async () => {
     generatePDF();
-    // const pdfPromises: Promise<Blob>[] = [];
-    // const zip = new JSZip();
-    // for (let i = 0; i < jsonData.length; i++) {
-    //   const element = document.getElementById(i + 'id');
-    //   const options = {
-    //     filename: jsonData[i].Receipt + "-" + jsonData[i].Name + '.pdf', // Specify the desired filename here
-    //   };
-    //   html2pdf().from(element).set(options).save();
-    // }
+
   };
 
-  //  new mwthod
   const generatePDF = async () => {
-    const pdfPromises: Promise<Blob>[] = [];
+    const pdfFiles: any[] = [];
     const zip = new JSZip();
-
-    // Array of HTML elements or strings to convert to PDFs
-    const contentToConvert = ['<h1>PDF 1</h1>', '<h1>PDF 2</h1>'];
 
     for (let i = 0; i < jsonData.length; i++) {
       const element = document.getElementById(i + 'id');
-      const pdfPromise = html2pdf().from(element).toPdf().output('blob');
-      pdfPromises.push(pdfPromise);
+      if (element != null) {
+        html2canvas(element, { scale: 2 }) // increase the scale for better resolution
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4'); // set page size to A4
+            const imgWidth = pdf.internal.pageSize.getWidth();
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            const pdfBlob = pdf.output('blob');
+            zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
+            // Array of PDF blobs
+            // pdfFiles.forEach((pdfBlob, index) => {
+            //   zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
+            // });
+            if (i == jsonData.length - 1)
+              zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
+                saveAs(zipBlob, 'converted.zip');
+              });
 
-      // Add PDF to zip
-      pdfPromise.then((pdfBlob: null) => {
-        zip.file(
-          jsonData[i].Mobile +
-            '-' +
-            jsonData[i].Name +
-            '-' +
-            jsonData[i].Receipt +
-            '.pdf',
-          pdfBlob,
-        );
-      });
-      // Generate PDF from HTML
-      // const pdfPromise = html2pdf().from(element).toPdf().get('pdf');
-      // pdfPromises.push(pdfPromise);
-
-      // // Add PDF to zip
-      // pdfPromise.then((pdf: null) => {
-      //   zip.file(`pdf_${i + 1}.pdf`, pdf);
-      // });
-    }
+          });
+      }
+    };
 
     // Generate zip folder once all PDFs are generated
-    Promise.all(pdfPromises).then(() => {
-      zip.generateAsync({ type: 'blob' }).then((content) => {
-        const zipBlob = new Blob([content], { type: 'application/zip' });
-        const zipUrl = URL.createObjectURL(zipBlob);
-
-        // Create a link to download the zip
-        const link = document.createElement('a');
-        link.href = zipUrl;
-        link.download = 'pdfs.zip';
-        document.body.appendChild(link);
-        link.click();
-
-        // Clean up
-        document.body.removeChild(link);
-        URL.revokeObjectURL(zipUrl);
-      });
-    });
   };
 
   return (
