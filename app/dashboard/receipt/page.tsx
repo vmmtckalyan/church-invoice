@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
-
 import { useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
