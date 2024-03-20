@@ -58,7 +58,7 @@ const UploadExcel: React.FC = () => {
         html2canvas(element, { scale: 2 }) // increase the scale for better resolution
           .then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4'); // set page size to A4
+            const pdf = new jsPDF('p', 'mm', [element.offsetHeight*0.2645833333,element.offsetWidth*0.2645833333]); // set page size to A4
             const imgWidth = pdf.internal.pageSize.getWidth();
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
@@ -114,7 +114,7 @@ const UploadExcel: React.FC = () => {
               ))}
             </tbody>
           </table> */}
-          <div className="mt-6 flow-root">
+          <div className="mt-6 flow-root ">
             <div className="inline-block min-w-full align-middle">
               <div className="rounded-lg bg-violet-400 p-2 md:pt-0">
                 <table className="hidden min-w-full text-gray-900 md:table">
@@ -204,7 +204,7 @@ const UploadExcel: React.FC = () => {
         <div
           key={index}
           id={index + 'id'}
-          className="mx-auto mt-4 max-w-md rounded-3xl border-4 border-violet-500/75 bg-gray-100 px-6 py-8 shadow-2xl"
+          className="mx-auto mt-4 max-w-md rounded-3xl border-4 border-violet-500/75 bg-gray-100 px-6 py-2 shadow-2xl"
         >
           <div className="flex items-center justify-center">
             <Image
