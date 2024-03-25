@@ -63,14 +63,16 @@ const UploadExcel: React.FC = () => {
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
             const pdfBlob = pdf.output('blob');
-            zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
+            zip.file(jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".pdf", pdfBlob);
             // Array of PDF blobs
             // pdfFiles.forEach((pdfBlob, index) => {
             //   zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
             // });
+            var months = ["Jan", "Feb", "Mar", "April", "May", "June", "July",
+         "August", "September", "October", "November", "December"];
             if (i == jsonData.length - 1)
               zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
-                saveAs(zipBlob, 'converted.zip');
+                saveAs(zipBlob, 'vmmtc-receipts'+'-'+new Date().getDate()+'-'+months[new Date().getMonth()]+'-'+new Date().getFullYear()+'.zip');
               });
 
           });
@@ -180,7 +182,10 @@ const UploadExcel: React.FC = () => {
                           </p>
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
-                          Rs. {invoice.Amount}
+                          Rs. {invoice.Amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+})}
                         </td>
                         <td className="whitespace-nowrap px-3 py-3">
                           {invoice.Mobile}
@@ -228,15 +233,19 @@ const UploadExcel: React.FC = () => {
             Kalyan (W) - 421301
           </div>
           <div className="mb-6 flex justify-between">
-            <h1 className="text-lg font-bold">Receipt no.: {item.Receipt}</h1>
+            <span className="text-left rounded-md px-2 py-1 text-lg font-medium text-purple-700">Receipt no.: {item.Receipt}</span>
+
             <div className="text-gray-700">
               <div>Date: {item.Date}</div>
               {/* <div>Invoice #: INV12345</div> */}
             </div>
           </div>
           <div className="mb-8">
-            <h2 className="mb-4 text-lg font-bold">
-              Received from: {item.Title} {item.Name}
+            <h2 className="text-sm">
+              Received with thanks from:
+            </h2>
+            <h2 className="mb-4 text-lg">
+              {item.Title} {item.Name}
             </h2>
             <div className="mb-2 text-violet-700"></div>
             {/* <div className="text-gray-700 mb-2">123 Main St.</div>
@@ -255,7 +264,10 @@ const UploadExcel: React.FC = () => {
             <tbody>
               <tr>
                 <td className="text-left text-gray-700">{item.Heading}</td>
-                <td className="text-right text-gray-700">Rs. {item.Amount}</td>
+                <td className="text-right text-gray-700">Rs. {item.Amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+})}</td>         
               </tr>
               <tr>
                 <td className="text-wrap mb-10 pr-20 text-left text-xs italic text-gray-700">
@@ -274,8 +286,8 @@ const UploadExcel: React.FC = () => {
               </tr> */}
             </tfoot>
           </table>
-          <div className="mb-8 text-center font-bold text-gray-500">
-            Payment mode: {item.Mode}
+          <div className="mb-8 text-left font-bold text-gray-500">
+          Amt. in words: {item.Words}
           </div>
           <div className="mb-2 text-center text-gray-700">
             Thank you for your support!
