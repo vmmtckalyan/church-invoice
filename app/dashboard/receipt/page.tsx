@@ -42,76 +42,59 @@ const UploadExcel: React.FC = () => {
   };
 
   const handleUploadImage = async () => {
-    generateImage();
+    await generateImage();
 
   };
 
   const handleUploadPdf = async () => {
-    generatePDF();
+    await generatePDF();
 
   };
 
   const generatePDF = async () => {
-    const pdfFiles: any[] = [];
     const zip = new JSZip();
-
+    
     for (let i = 0; i < jsonData.length; i++) {
       const element = document.getElementById(i + 'id');
       if (element != null) {
-        html2canvas(element, { scale: 2 }) // increase the scale for better resolution
-          .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', [element.offsetHeight*0.2645833333,element.offsetWidth*0.2645833333]); // set page size to A4
-            const imgWidth = pdf.internal.pageSize.getWidth();
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            const pdfBlob = pdf.output('blob');
-            zip.file(jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".pdf", pdfBlob);
-            // Array of PDF blobs
-            // pdfFiles.forEach((pdfBlob, index) => {
-            //   zip.file(jsonData[i].Receipt + "-" + jsonData[i].Name + ".pdf", pdfBlob);
-            // });
-            var months = ["Jan", "Feb", "Mar", "April", "May", "June", "July",
-         "August", "September", "October", "November", "December"];
-            if (i == jsonData.length - 1)
-              zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
-                saveAs(zipBlob, 'vmmtc-receipts-pdf'+'-'+new Date().getDate()+'-'+months[new Date().getMonth()]+'-'+new Date().getFullYear()+'.zip');
-              });
-
-          });
-      }
-    };
-
-    // Generate zip folder once all PDFs are generated
-  };
-
-  const generateImage = async () => {
-    const zip = new JSZip();
-
-    for (let i = 0; i < jsonData.length; i++) {
-      const element = document.getElementById(i + 'id');
-      if (element != null) {
-        html2canvas(element, { scale: 2 }) // Increase the scale for better resolution
-          .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const imgName = jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".png";
-            zip.file(imgName, imgData.split('base64,')[1], { base64: true });
-    
-            var months = ["Jan", "Feb", "Mar", "April", "May", "June", "July",
-              "August", "September", "October", "November", "December"];
-    
-            if (i === jsonData.length - 1) {
-              zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
-                saveAs(zipBlob, 'vmmtc-receipts-image' + '-' + new Date().getDate() + '-' + months[new Date().getMonth()] + '-' + new Date().getFullYear() + '.zip');
-              });
-            }
-          });
+        const canvas = await html2canvas(element, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', [element.offsetHeight * 0.2645833333, element.offsetWidth * 0.2645833333]);
+        const imgWidth = pdf.internal.pageSize.getWidth();
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        const pdfBlob = pdf.output('blob');
+        zip.file(jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".pdf", pdfBlob);
       }
     }
+  
+    const months = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    saveAs(zipBlob, 'vmmtc-receipts-pdf' + '-' + new Date().getDate() + '-' + months[new Date().getMonth()] + '-' + new Date().getFullYear() + '.zip');
+  };
+  
 
     // Generate zip folder once all PDFs are generated
-  };
+  //};
 
+  const generateImage = async () => {
+    const zipImg = new JSZip();
+  
+    for (let j = 0; j < jsonData.length; j++) {
+      const elementImg = document.getElementById(j + 'id');
+      if (elementImg != null) {
+        const canvas = await html2canvas(elementImg, { scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const imgName = jsonData[j].Mobile + "-" + jsonData[j].Name + "-" + jsonData[j].Receipt + ".png";
+        zipImg.file(imgName, imgData.split('base64,')[1], { base64: true });
+      }
+    }
+  
+    const months = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const zipBlob = await zipImg.generateAsync({ type: 'blob' });
+    saveAs(zipBlob, 'vmmtc-receipts-image' + '-' + new Date().getDate() + '-' + months[new Date().getMonth()] + '-' + new Date().getFullYear() + '.zip');
+  };
+  
   return (
     <div className="mt-6 flow-root">
       <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
@@ -122,17 +105,17 @@ const UploadExcel: React.FC = () => {
         Download Pdf
       </button>
       <button
-        className="items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
+        className="mb-10 ml-5 items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
         onClick={handleUploadImage}
       >
         Download Image
       </button>
-      <button
+      {/* <button
         className="mb-10 ml-5 items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
         onClick={handleUploadPdf}
       >
         Whatsapp Push
-      </button>
+      </button> */}
       {jsonData && jsonData[0] && (
         <div>
           {/* <table>
