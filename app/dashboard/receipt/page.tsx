@@ -41,9 +41,12 @@ const UploadExcel: React.FC = () => {
     }
   };
 
+  const handleUploadImage = async () => {
+    generateImage();
 
+  };
 
-  const handleUpload = async () => {
+  const handleUploadPdf = async () => {
     generatePDF();
 
   };
@@ -72,7 +75,7 @@ const UploadExcel: React.FC = () => {
          "August", "September", "October", "November", "December"];
             if (i == jsonData.length - 1)
               zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
-                saveAs(zipBlob, 'vmmtc-receipts'+'-'+new Date().getDate()+'-'+months[new Date().getMonth()]+'-'+new Date().getFullYear()+'.zip');
+                saveAs(zipBlob, 'vmmtc-receipts-pdf'+'-'+new Date().getDate()+'-'+months[new Date().getMonth()]+'-'+new Date().getFullYear()+'.zip');
               });
 
           });
@@ -82,18 +85,51 @@ const UploadExcel: React.FC = () => {
     // Generate zip folder once all PDFs are generated
   };
 
+  const generateImage = async () => {
+    const zip = new JSZip();
+
+    for (let i = 0; i < jsonData.length; i++) {
+      const element = document.getElementById(i + 'id');
+      if (element != null) {
+        html2canvas(element, { scale: 2 }) // Increase the scale for better resolution
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgName = jsonData[i].Mobile + "-" + jsonData[i].Name + "-" + jsonData[i].Receipt + ".png";
+            zip.file(imgName, imgData.split('base64,')[1], { base64: true });
+    
+            var months = ["Jan", "Feb", "Mar", "April", "May", "June", "July",
+              "August", "September", "October", "November", "December"];
+    
+            if (i === jsonData.length - 1) {
+              zip.generateAsync({ type: 'blob' }).then(function (zipBlob) {
+                saveAs(zipBlob, 'vmmtc-receipts-image' + '-' + new Date().getDate() + '-' + months[new Date().getMonth()] + '-' + new Date().getFullYear() + '.zip');
+              });
+            }
+          });
+      }
+    }
+
+    // Generate zip folder once all PDFs are generated
+  };
+
   return (
     <div className="mt-6 flow-root">
       <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
       <button
         className="items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
-        onClick={handleUpload}
+        onClick={handleUploadPdf}
       >
         Download Pdf
       </button>
       <button
+        className="items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
+        onClick={handleUploadImage}
+      >
+        Download Image
+      </button>
+      <button
         className="mb-10 ml-5 items-center rounded-lg bg-violet-600 p-3 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
-        onClick={handleUpload}
+        onClick={handleUploadPdf}
       >
         Whatsapp Push
       </button>
